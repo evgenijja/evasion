@@ -1,5 +1,4 @@
-import copy
-from typing import List, Tuple
+from typing import List
 
 import gudhi
 import numpy.typing as npt
@@ -123,55 +122,5 @@ class Room:
             periodic_dimensions=[True, False, False]
         )
 
-
-def time_step(room: Room, t: int) -> npt.NDArray[int]:
-    """Calculates room layout after t time steps."""
-    room_copy = copy.deepcopy(room)
-    return room_copy.time_slice(t)
-
-
-def about_complex(cubical_complex: gudhi.periodic_cubical_complex) -> None:
-    """Prints some data about the cubical complex."""
-    result_str = 'Periodic cubical complex is of dimension ' + repr(cubical_complex.dimension()) + ' - ' + \
-                 repr(cubical_complex.num_simplices()) + ' simplices.'
-    print(result_str)
-    print("persistence:  " + repr(cubical_complex.persistence()))  # pairs(dimension, pair(birth, death))
-    print("compute_persistence:  " + repr(cubical_complex.compute_persistence()))
-    print("cofaces_of_persistence_pairs:  " + repr(cubical_complex.cofaces_of_persistence_pairs()))
-    print("persistent_betti_numbers:  " + repr(cubical_complex.persistent_betti_numbers(np.inf, 1)))
-
-
-def one_dimensional_loop(room: Room) -> List[Tuple[float, float]]:
-    """"Function that calculates one dimensional loops in a cubical complex created based on room.
-    If no such hole exists it returnes [(-1, -1)]. Else, the output is a list of pairs (birth_time, death_time).
-    NOTE: Also the diagonal movement is allowed!!"""
-    cubical_complex = room.create_complex()
-    persistence = cubical_complex.persistence()
-    loops = []
-    if persistence:
-        for dimension, pers in persistence:
-            if dimension == 1:
-                birth, death = pers
-                if birth != death:
-                    loops.append((dimension, pers))
-    return loops if loops else [(-1, -1)]
-
-
-if __name__ == "__main__":
-    print("simple test: 4 x 4 grid")
-    sensor1 = Sensor(np.array([1, 1]), np.array([1, 0]), 2, 0)
-    sensor2 = Sensor(np.array([1, 3]), np.array([1, 0]), 2, 0)
-    sample_room = Room(np.array([4, 4]), [sensor1, sensor2])
-
-    print("Initial room layout: ")
-    print(sample_room.layout)
-
-    print("Period: " + str(sample_room.period))
-
-    print("Room after 2 time steps: ")
-    print(time_step(sample_room, 2))
-
-    print("About the complex:")
-    about_complex(sample_room.create_complex())
-
-    print("Possible one dimensional loops: " + str(one_dimensional_loop(sample_room)))
+    # TODO: construct a somplex out of observed cells
+    # TODO: determine which generators of H1(F, Z) represent paths a thief can take to avoid detection
