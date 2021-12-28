@@ -1,5 +1,7 @@
 import copy
-from typing import List
+from typing import List, Tuple
+
+import gudhi
 import numpy.typing as npt
 import numpy as np
 
@@ -90,11 +92,69 @@ class Room:
 
         return layout
 
+    def layout_to_filtration(self, step: int) -> List[List[float]]:
+        """Transforms rooms layout to a filtration matrix. Supervised cells get the infinity filtration,
+        others get the filtration number equal to the argument step."""
+        x, y = self.dimension
+        filtration = np.zeros([x, y], dtype=float)
+        for row in range(y):
+            for cell in range(x):
+                if self.layout[row][cell] == 0:
+                    filtration[row][cell] += step
+                else:
+                    filtration[row][cell] = np.inf
+        return filtration.tolist()
+
+    def list_top_dimensial_cells(self) -> List[List[List[float]]]:
+        """Preprares s list of filtration matrices for the room at every time slice.
+         At time t=0 we get the first matrix where all unsupervised cells have the filtration value 0.
+         For all times between 0 and room period unsupervised cells have filtration value equal to t.
+         This list is useful for creating the (periodic) cubical complex."""
+        top_dim_cells = []
+        for i in range(self.period):
+            top_dim_cells.append(self.layout_to_filtration(i))
+            self.time_passes()
+        return top_dim_cells
+
+    def create_complex(self) -> gudhi.PeriodicCubicalComplex:
+        """Creates and returns the gudhi.PeriodicCubicalComplex."""
+        return gudhi.PeriodicCubicalComplex(
+            top_dimensional_cells=self.list_top_dimensial_cells(),
+            periodic_dimensions=[True, False, False]
+        )
+
 
 def time_step(room: Room, t: int) -> npt.NDArray[int]:
     """Calculates room layout after t time steps."""
     room_copy = copy.deepcopy(room)
     return room_copy.time_slice(t)
+
+
+def about_complex(cubical_complex: gudhi.periodic_cubical_complex) -> None:
+    """Prints some data about the cubical complex."""
+    result_str = 'Periodic cubical complex is of dimension ' + repr(cubical_complex.dimension()) + ' - ' + \
+                 repr(cubical_complex.num_simplices()) + ' simplices.'
+    print(result_str)
+    print("persistence:  " + repr(cubical_complex.persistence()))  # pairs(dimension, pair(birth, death))
+    print("compute_persistence:  " + repr(cubical_complex.compute_persistence()))
+    print("cofaces_of_persistence_pairs:  " + repr(cubical_complex.cofaces_of_persistence_pairs()))
+    print("persistent_betti_numbers:  " + repr(cubical_complex.persistent_betti_numbers(np.inf, 1)))
+
+
+def one_dimensional_loop(room: Room) -> List[Tuple[float, float]]:
+    """"Function that calculates one dimensional loops in a cubical complex created based on room.
+    If no such hole exists it returnes [(-1, -1)]. Else, the output is a list of pairs (birth_time, death_time).
+    NOTE: Also the diagonal movement is allowed!!"""
+    cubical_complex = room.create_complex()
+    persistence = cubical_complex.persistence()
+    loops = []
+    if persistence:
+        for dimension, pers in persistence:
+            if dimension == 1:
+                birth, death = pers
+                if birth != death:
+                    loops.append((dimension, pers))
+    return loops if loops else [(-1, -1)]
 
 
 if __name__ == "__main__":
@@ -110,3 +170,8 @@ if __name__ == "__main__":
 
     print("Room after 2 time steps: ")
     print(time_step(sample_room, 2))
+
+    print("About the complex:")
+    about_complex(sample_room.create_complex())
+
+    print("Possible one dimensional loops: " + str(one_dimensional_loop(sample_room)))
