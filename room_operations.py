@@ -21,7 +21,7 @@ def about_complex(cubical_complex: gudhi.periodic_cubical_complex) -> None:
     print("persistent_betti_numbers:  " + repr(cubical_complex.persistent_betti_numbers(np.inf, 1)))
 
 
-def one_dimensional_loop(room: Room) -> List[Tuple[float, float]]:
+def one_dimensional_loop(room: Room) -> list[Tuple[float, float]]:
     """"Function that calculates one dimensional loops in a cubical complex created based on room.
     If no such hole exists it returnes [(-1, -1)]. Else, the output is a list of pairs (birth_time, death_time).
     NOTE: Also the diagonal movement is allowed!!"""
