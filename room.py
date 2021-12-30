@@ -1,5 +1,3 @@
-from typing import List
-
 import gudhi
 import numpy.typing as npt
 import numpy as np
@@ -13,7 +11,7 @@ class Sensor:
         self.steps_forward = steps_forward
         self.steps_back = steps_back
 
-    def move(self):
+    def move(self) -> None:
         """Moves the sensor for one step."""
         if self.steps_forward:
             self.position = self.position + self.direction
@@ -30,7 +28,7 @@ class Sensor:
 class Room:
     period = None
 
-    def __init__(self, dimension: npt.NDArray[int], sensors: List[Sensor]):
+    def __init__(self, dimension: npt.NDArray[int], sensors: list[Sensor]):
         self.dimension = dimension
         self.sensors = sensors
         self.compute_period()
@@ -40,7 +38,8 @@ class Room:
         """Calculates the period; the time needed for all sensors to be back to the initial position.
         Period of d means that the layout of the sensors in the room at time t and t + d is equal."""
         steps = [2 * (sensor.steps_forward + sensor.steps_back) for sensor in self.sensors]
-        self.period = np.lcm.reduce(steps)
+        lcm = np.lcm.reduce(steps)
+        self.period = lcm if lcm else 1
 
     def time_passes(self) -> None:
         """Simulates sensor movement in one time unit."""
@@ -91,7 +90,7 @@ class Room:
 
         return layout
 
-    def layout_to_filtration(self, step: int) -> List[List[float]]:
+    def layout_to_filtration(self, step: int) -> list[list[float]]:
         """Transforms rooms layout to a filtration matrix. Supervised cells get the infinity filtration,
         others get the filtration number equal to the argument step."""
         x, y = self.dimension
@@ -102,9 +101,9 @@ class Room:
                     filtration[row][cell] += step
                 else:
                     filtration[row][cell] = np.inf
-        return filtration.tolist()
+        return filtration.tolist()  # type: ignore
 
-    def list_top_dimensial_cells(self) -> List[List[List[float]]]:
+    def list_top_dimensial_cells(self) -> list[list[list[float]]]:
         """Preprares s list of filtration matrices for the room at every time slice.
          At time t=0 we get the first matrix where all unsupervised cells have the filtration value 0.
          For all times between 0 and room period unsupervised cells have filtration value equal to t.
@@ -122,5 +121,5 @@ class Room:
             periodic_dimensions=[True, False, False]
         )
 
-    # TODO: construct a somplex out of observed cells
+    # TODO: construct a simplex out of observed cells
     # TODO: determine which generators of H1(F, Z) represent paths a thief can take to avoid detection
