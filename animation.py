@@ -1,4 +1,3 @@
-import time
 import tkinter as tk
 from room import *
 
@@ -12,6 +11,7 @@ class Animation:
     def __init__(self):
         self.window = tk.Tk()
         self.window.title("Evasion")
+        self.speed = 600  # speed of the sensor movement in animation (in milliseconds)
 
     def set_room(self, room) -> None:
         """Sets the room and according to its dimensions sets the size of the canvas. Canvas height is fixed to 500,
@@ -25,33 +25,20 @@ class Animation:
     def animate(self):
         canvas = tk.Canvas(self.window, bg="white")
         canvas.pack(fill=tk.BOTH, expand=1)
-        #
-        # def my_mainloop():
-        #     for sensor in self.room.sensors:
-        #         x, y = sensor.position
-        #         canvas.create_rectangle(sensor_reach * x - sensor_reach, sensor_reach * y - sensor_reach, sensor_reach * x + sensor_reach, sensor_reach * y + sensor_reach, fill="purple")
-        #         self.window.update()
-        #         # time.sleep(0.5)
-        #         # canvas.delete("all")
-        #     self.window.after(10, my_mainloop)
-        #
-        # self.window.after(10, my_mainloop)
-        #
-        # self.window.mainloop()
 
-        while True:
-
+        def my_mainloop():
+            canvas.delete("all")
             for sensor in self.room.sensors:
                 x, y = sensor.position
                 canvas.create_rectangle(self.sensor_reach * x - self.sensor_reach,
                                         self.sensor_reach * y - self.sensor_reach,
                                         self.sensor_reach * x + self.sensor_reach,
                                         self.sensor_reach * y + self.sensor_reach, fill="purple")
-            self.window.update()
-            time.sleep(0.5)
-            canvas.delete("all")
             self.room.time_passes()
+            self.window.update()
+            self.window.after(self.speed, my_mainloop)
 
+        self.window.after(0, my_mainloop)
         self.window.mainloop()
 
     def run(self) -> None:
