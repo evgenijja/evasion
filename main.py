@@ -4,7 +4,7 @@ from room_operations import *
 if __name__ == "__main__":
     print("simple test: 4 x 4 grid")
     sensor1 = Sensor(np.array([1, 1]), np.array([1, 0]), 2, 0)
-    sensor2 = Sensor(np.array([1, 3]), np.array([1, 0]), 2, 0)
+    sensor2 = Sensor(np.array([1, 3]), np.array([1, 0]), 0, 0)
     sample_room = Room(np.array([4, 4]), [sensor1, sensor2])
 
     print("Initial room layout: ")

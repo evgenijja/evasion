@@ -1,5 +1,4 @@
 import tkinter as tk
-from room import *
 
 
 class Animation:
@@ -22,7 +21,8 @@ class Animation:
         self.width = int(self.sensor_reach * dim_x)
         self.window.geometry("{0}x{1}".format(self.width, self.height))
 
-    def animate(self):
+    def animate(self) -> None:
+        """Main function that runs the animation. It creates the canvas, draws the sensors and updates room's layout."""
         canvas = tk.Canvas(self.window, bg="white")
         canvas.pack(fill=tk.BOTH, expand=1)
 
@@ -33,7 +33,11 @@ class Animation:
                 canvas.create_rectangle(self.sensor_reach * x - self.sensor_reach,
                                         self.sensor_reach * y - self.sensor_reach,
                                         self.sensor_reach * x + self.sensor_reach,
-                                        self.sensor_reach * y + self.sensor_reach, fill="purple")
+                                        self.sensor_reach * y + self.sensor_reach, fill="#e39229")
+                canvas.create_oval(self.sensor_reach * x - 7,
+                                   self.sensor_reach * y - 7,
+                                   self.sensor_reach * x + 7,
+                                   self.sensor_reach * y + 7, outline="#9e5c06", fill="#9e5c06")
             self.room.time_passes()
             self.window.update()
             self.window.after(self.speed, my_mainloop)
@@ -42,6 +46,7 @@ class Animation:
         self.window.mainloop()
 
     def run(self) -> None:
+        """Checks if everything is prepared and starts the animation."""
         if self.room:
             self.animate()
         else:
@@ -49,10 +54,9 @@ class Animation:
 
 
 if __name__ == '__main__':
-    sensor1 = Sensor(np.array([1, 1]), np.array([1, 0]), 2, 0)
-    sensor2 = Sensor(np.array([1, 3]), np.array([1, 0]), 1, 0)
-    sample_room = Room(np.array([4, 5]), [sensor1, sensor2])
+    from test_rooms import *
 
     animation = Animation()
-    animation.set_room(sample_room)
+    animation.set_room(room1)
+    # animation.set_room(room2)
     animation.run()
