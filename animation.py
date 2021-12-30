@@ -52,11 +52,43 @@ class Animation:
         else:
             raise Exception("A room must be set in order to animate it. Please use .set_room(<your_room>) method.")
 
+    def draw(self, t: int) -> None:
+        canvas = tk.Canvas(self.window, bg="white")
+        canvas.pack(fill=tk.BOTH, expand=1)
+
+        self.room.time_slice(t)
+        for sensor in self.room.sensors:
+            x, y = sensor.position
+            canvas.create_rectangle(self.sensor_reach * x - self.sensor_reach,
+                                    self.sensor_reach * y - self.sensor_reach,
+                                    self.sensor_reach * x + self.sensor_reach,
+                                    self.sensor_reach * y + self.sensor_reach, fill="#e39229")
+            canvas.create_oval(self.sensor_reach * x - 7,
+                               self.sensor_reach * y - 7,
+                               self.sensor_reach * x + 7,
+                               self.sensor_reach * y + 7, outline="#9e5c06", fill="#9e5c06")
+        self.window.update()
+
+        self.window.mainloop()
+
+    def show_planar_slices(self) -> None:
+        """"Draws a planar slice of the room at time t."""
+        if self.room:
+            self.draw()
+        else:
+            raise Exception("A room must be set in order to draw it. Please use .set_room(<your_room>) method.")
+
 
 if __name__ == '__main__':
     from test_rooms import *
 
     animation = Animation()
-    animation.set_room(room1)
-    # animation.set_room(room2)
-    animation.run()
+
+    # using sample room from the instructions
+    animation.set_room(room2)
+
+    # uncomment to animate the room
+    # animation.run()
+
+    # uncomment to draw room's layout at time t = 3
+    animation.draw(3)
