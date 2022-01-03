@@ -72,7 +72,7 @@ class Animation:
         self.window.mainloop()
 
     def show_planar_slices(self) -> None:
-        """"Draws a planar slice of the room at time t."""
+        """Draws a planar slice of the room at time t."""
         if self.room:
             self.draw()
         else:

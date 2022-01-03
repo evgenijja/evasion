@@ -41,11 +41,12 @@ class Room:
         lcm = np.lcm.reduce(steps)
         self.period = lcm if lcm else 1
 
-    def time_passes(self) -> None:
+    def time_passes(self) -> npt.NDArray[int]:
         """Simulates sensor movement in one time unit."""
         for sensor in self.sensors:
             sensor.move()
         self.layout = self.create_layout()
+        return self.layout
 
     def time_slice(self, t: int) -> npt.NDArray[int]:
         """Returns a matrix representing the room at time t.

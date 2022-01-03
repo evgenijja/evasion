@@ -4,16 +4,22 @@ from test_rooms import *
 
 if __name__ == "__main__":
 
+    # choose a test room
+    test_room = room2
 
     print("Initial room layout: ")
-    print(room2.layout)
+    print(test_room.layout)
 
-    print("Period: " + str(room2.period))
+    print("Sensors are scanning the whole room."
+          if whole_room_supervised(test_room)
+          else "Room has blind spots where the intruder can not be seen.")
+
+    print("Period: " + str(test_room.period))
 
     print("Room after 2 time steps: ")
-    print(time_step(room2, 2))
+    print(time_step(test_room, 2))
 
     print("About the complex:")
-    about_complex(room2.create_complex())
+    about_complex(test_room.create_complex())
 
-    print("Possible one dimensional loops: " + str(one_dimensional_loop(room2)))
+    print("Possible one dimensional loops: " + str(one_dimensional_loop(test_room)))

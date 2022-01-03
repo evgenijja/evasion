@@ -4,7 +4,7 @@ from room import Sensor, Room
 
 # simple sample room with a solution
 sensor1 = Sensor(np.array([1, 1]), np.array([1, 0]), 2, 0)
-sensor2 = Sensor(np.array([1, 3]), np.array([1, 0]), 1, 0)
+sensor2 = Sensor(np.array([1, 3]), np.array([1, 0]), 2, 0)
 room1 = Room(np.array([4, 4]), [sensor1, sensor2])
 
 # example from the instructions

@@ -10,6 +10,16 @@ def time_step(room: Room, t: int) -> npt.NDArray[int]:
     return room_copy.time_slice(t)
 
 
+def whole_room_supervised(room: Room) -> bool:
+    """Returns True if every cell of the room si seen by a sensor at least at some point.
+    Returns False if this is not the case and there exist cells that are never seen."""
+    room_copy = copy.deepcopy(room)
+    layout = room_copy.layout
+    for _ in room_copy.dimension:
+        layout += room_copy.time_passes()
+    return 0 not in layout
+
+
 def about_complex(cubical_complex: gudhi.periodic_cubical_complex) -> None:
     """Prints some data about the cubical complex."""
     result_str = 'Periodic cubical complex is of dimension ' + repr(cubical_complex.dimension()) + ' - ' + \
