@@ -91,36 +91,45 @@ class Room:
 
         return layout
 
-    def layout_to_filtration(self, step: int) -> list[list[float]]:
-        """Transforms rooms layout to a filtration matrix. Supervised cells get the infinity filtration,
-        others get the filtration number equal to the argument step."""
+    def layout_to_filtration(self, step: int, covered=False) -> list[list[float]]:
+        """Transforms rooms layout to a filtration matrix.
+        If covered is set to False, supervised cells get the infinity filtration,
+        others get the filtration number equal to the argument step.
+        If covered is True, free cells get the infinity filtration."""
         x, y = self.dimension
         filtration = np.zeros([x, y], dtype=float)
         for row in range(y):
             for cell in range(x):
                 if self.layout[row][cell] == 0:
-                    filtration[row][cell] += step
+                    filtration_number = np.inf if covered else step
+                    filtration[row][cell] += filtration_number
                 else:
-                    filtration[row][cell] = np.inf
+                    filtration_number = step if covered else np.inf
+                    filtration[row][cell] += filtration_number
         return filtration.tolist()  # type: ignore
 
-    def list_top_dimensial_cells(self) -> list[list[list[float]]]:
+    def list_top_dimensial_cells(self, covered=False) -> list[list[list[float]]]:
         """Preprares s list of filtration matrices for the room at every time slice.
+         If covered is set to False:
          At time t=0 we get the first matrix where all unsupervised cells have the filtration value 0.
          For all times between 0 and room period unsupervised cells have filtration value equal to t.
+         If covered is set to True:
+         At time t=0 we get the first matrix with supervised cells filtration number set to infinity.
          This list is useful for creating the (periodic) cubical complex."""
         top_dim_cells = []
         for i in range(self.period):
-            top_dim_cells.append(self.layout_to_filtration(i))
+            top_dim_cells.append(self.layout_to_filtration(i, covered))
             self.time_passes()
         return top_dim_cells
 
-    def create_complex(self) -> gudhi.PeriodicCubicalComplex:
-        """Creates and returns the gudhi.PeriodicCubicalComplex."""
+    def create_complex(self, covered=False) -> gudhi.PeriodicCubicalComplex:
+        """Creates and returns the gudhi.PeriodicCubicalComplex.
+        If covered is set to True we get a cubical complex presenting the observed (covered) cells,
+        else we get the complex out of unobserved cells."""
         return gudhi.PeriodicCubicalComplex(
-            top_dimensional_cells=self.list_top_dimensial_cells(),
+            top_dimensional_cells=self.list_top_dimensial_cells(covered),
             periodic_dimensions=[True, False, False]
         )
 
-    # TODO: construct a simplex out of observed cells
+
     # TODO: determine which generators of H1(F, Z) represent paths a thief can take to avoid detection

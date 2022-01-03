@@ -33,7 +33,7 @@ def about_complex(cubical_complex: gudhi.periodic_cubical_complex) -> None:
 
 def one_dimensional_loop(room: Room) -> list[Tuple[float, float]]:
     """"Function that calculates one dimensional loops in a cubical complex created based on room.
-    If no such hole exists it returnes [(-1, -1)]. Else, the output is a list of pairs (birth_time, death_time).
+    If no such hole exists it returns [(-1, -1)]. Else, the output is a list of pairs (birth_time, death_time).
     NOTE: Also the diagonal movement is allowed!!"""
     cubical_complex = room.create_complex()
     persistence = cubical_complex.persistence()
