@@ -68,27 +68,35 @@ class Room:
             x, y = sensor.position
             if x == 0:
                 # ce smo na robu, senzor vidi le 2 polji v x smeri
-                if y == 0:
+                if y == 0: # primer ko je v enem kotu 
                     layout[-1][x] = 1
-                elif y == dim_y:
+                elif y == dim_y: # ali v drugem kotu
                     layout[0][x] = 1
                 else:
-                    layout[-y][x] = 1
+                    layout[-y][x] = 1 # ali nekje na levem robu
                     layout[-y + 1][x] = 1
             elif x == dim_x:
-                if y == 0:
+                if y == 0: # ali v tretjem kotu
                     layout[-1][x - 1] = 1
-                elif y == dim_y:
+                elif y == dim_y: # ali v četrtek kotu
                     layout[0][x - 1] = 1
                 else:
-                    layout[-y][x - 1] = 1
+                    layout[-y][x - 1] = 1 # ali nekje na desnem robu
                     layout[-y + 1][x - 1] = 1
-            else:
-                layout[-y][x - 1] = 1
-                layout[-y][x] = 1
-                layout[-y - 1][x - 1] = 1
-                layout[-y - 1][x] = 1
 
+            elif y == 0 and x != 0 and x != dim_x: # smo nekje na spodnjem robu
+                layout[-1][x-1] = 1
+                layout[-1][x] = 1
+
+            elif y == dim_y and x != 0 and x != dim_x: # nekje na zgornjem robu
+                layout[0][x-1] = 1
+                layout[0][x] = 1
+                
+##            else: # tko je blo prej
+##                layout[-y][x - 1] = 1
+##                layout[-y][x] = 1
+##                layout[-y - 1][x - 1] = 1
+##                layout[-y - 1][x] = 1
         return layout
 
     def layout_to_filtration(self, step: int, covered=False) -> list[list[float]]:
