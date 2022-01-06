@@ -73,31 +73,54 @@ class Room:
                 elif y == dim_y: # ali v drugem kotu
                     layout[0][x] = 1
                 else:
-                    layout[-y][x] = 1 # ali nekje na levem robu
-                    layout[-y + 1][x] = 1
+                    #layout[-y][x] = 1 # ali nekje na levem robu
+                    #layout[-y + 1][x] = 1
+                    layout[y][x] = 1 # ali nekje na levem robu
+                    layout[y - 1][x] = 1
             elif x == dim_x:
                 if y == 0: # ali v tretjem kotu
                     layout[-1][x - 1] = 1
                 elif y == dim_y: # ali v četrtek kotu
                     layout[0][x - 1] = 1
                 else:
-                    layout[-y][x - 1] = 1 # ali nekje na desnem robu
-                    layout[-y + 1][x - 1] = 1
+                    #layout[-y][x - 1] = 1 # ali nekje na desnem robu
+                    #layout[-y + 1][x - 1] = 1 # če je y = 1 dobiš 0 in -1
+                    layout[y][x - 1] = 1 # ali nekje na desnem robu
+                    layout[y - 1][x - 1] = 1
 
-            elif y == 0 and x != 0 and x != dim_x: # smo nekje na spodnjem robu
+            # dodano -----------------
+
+            elif y == dim_y and x != 0 and x != dim_x: # smo nekje na spodnjem robu
                 layout[-1][x-1] = 1
                 layout[-1][x] = 1
 
-            elif y == dim_y and x != 0 and x != dim_x: # nekje na zgornjem robu
+            elif y == 0 and x != 0 and x != dim_x: # nekje na zgornjem robu
                 layout[0][x-1] = 1
                 layout[0][x] = 1
+
+            # ------------------------
                 
-##            else: # tko je blo prej
-##                layout[-y][x - 1] = 1
-##                layout[-y][x] = 1
-##                layout[-y - 1][x - 1] = 1
-##                layout[-y - 1][x] = 1
+            else: 
+                layout[-y][x - 1] = 1
+                layout[-y][x] = 1
+                layout[-y - 1][x - 1] = 1
+                layout[-y - 1][x] = 1
         return layout
+    
+    def room_at_time_n(self, n):
+        """Return the layout matrix at time n which we will use to find a path"""
+        moved_sensors = []
+        for sensor in self.sensors:
+            for i in range(n):
+            
+                sensor.move()
+            
+            moved_sensors.append(sensor)
+           
+        self.sensors = moved_sensors
+                
+        self.layout = self.create_layout()
+        return self.layout
 
     def layout_to_filtration(self, step: int, covered=False) -> list[list[float]]:
         """Transforms rooms layout to a filtration matrix.
