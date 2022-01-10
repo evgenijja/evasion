@@ -26,8 +26,6 @@ def about_complex(cubical_complex: gudhi.periodic_cubical_complex) -> None:
                  repr(cubical_complex.num_simplices()) + ' simplices.'
     print(result_str)
     print("persistence:  " + repr(cubical_complex.persistence()))  # pairs(dimension, pair(birth, death))
-    print("compute_persistence:  " + repr(cubical_complex.compute_persistence()))
-    print("cofaces_of_persistence_pairs:  " + repr(cubical_complex.cofaces_of_persistence_pairs()))
     print("persistent_betti_numbers:  " + repr(cubical_complex.persistent_betti_numbers(np.inf, 1)))
 
 
@@ -36,13 +34,14 @@ def one_dimensional_loop(room: Room) -> list[Tuple[float, float]]:
     If no such hole exists it returns [(-1, -1)]. Else, the output is a list of pairs (birth_time, death_time).
     NOTE: Also the diagonal movement is allowed!!"""
     cubical_complex = room.create_complex()
+    period = room.period
     persistence = cubical_complex.persistence()
     loops = []
     if persistence:
         for dimension, pers in persistence:
             if dimension == 1:
                 birth, death = pers
-                if birth != death:
+                if birth != death and birth >= period - 1:  # loops that are created before, are not around the torus
                     loops.append((dimension, pers))
     return loops if loops else [(-1, -1)]
 

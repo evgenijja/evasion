@@ -129,8 +129,8 @@ class Room:
         If covered is set to False, supervised cells get the infinity filtration,
         others get the filtration number equal to the argument step.
         If covered is True, free cells get the infinity filtration."""
-        x, y = self.dimension
-        filtration = np.zeros([x, y], dtype=float)
+        y, x = self.dimension
+        filtration = np.zeros([y, x], dtype=float)
         for row in range(y):
             for cell in range(x):
                 if self.layout[row][cell] == 0:
