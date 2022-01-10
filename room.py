@@ -40,7 +40,7 @@ class Room:
         """Calculates the period; the time needed for all sensors to be back to the initial position.
         Period of d means that the layout of the sensors in the room at time t and t + d is equal."""
         steps = [2 * (sensor.steps_forward + sensor.steps_back) for sensor in self.sensors]
-        lcm = np.lcm.reduce(steps)
+        lcm = np.lcm.reduce(list(filter(lambda x: x != 0, steps)))  # sensors that are not moving do not affect period
         self.period = lcm if lcm else 1
 
     def time_passes(self) -> npt.NDArray[int]:

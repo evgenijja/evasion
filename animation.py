@@ -1,5 +1,7 @@
 import tkinter as tk
 
+from test_rooms import *
+
 
 class Animation:
     room = None
@@ -16,7 +18,7 @@ class Animation:
         """Sets the room and according to its dimensions sets the size of the canvas. Canvas height is fixed to 500,
         its width is relative to height according to the room size."""
         self.room = room
-        dim_x, dim_y = room.dimension
+        dim_y, dim_x = room.dimension
         self.sensor_reach = self.height / dim_y
         self.width = int(self.sensor_reach * dim_x)
         self.window.geometry("{0}x{1}".format(self.width, self.height))
@@ -57,8 +59,8 @@ class Animation:
         canvas.pack(fill=tk.BOTH, expand=1)
 
         self.room.time_slice(t)
-        for sensor in self.room.sensors:
-            x, y = sensor.position
+        for s in self.room.sensors:
+            x, y = s.position
             canvas.create_rectangle(self.sensor_reach * x - self.sensor_reach,
                                     self.sensor_reach * y - self.sensor_reach,
                                     self.sensor_reach * x + self.sensor_reach,
@@ -79,16 +81,20 @@ class Animation:
             raise Exception("A room must be set in order to draw it. Please use .set_room(<your_room>) method.")
 
 
-if __name__ == '__main__':
-    from test_rooms import *
+def run_animation(room_to_animate):
+    animation = Animation()
+    animation.set_room(room_to_animate)
+    animation.run()
 
+
+if __name__ == '__main__':
     animation = Animation()
 
     # using sample room from the instructions
-    animation.set_room(room2)
+    animation.set_room(room3)
 
     # uncomment to animate the room
-    # animation.run()
+    animation.run()
 
     # uncomment to draw room's layout at time t = 3
-    animation.draw(3)
+    # animation.draw(3)

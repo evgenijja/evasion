@@ -45,8 +45,21 @@ def one_dimensional_loop(room: Room) -> list[Tuple[float, float]]:
                     loops.append((dimension, pers))
     return loops if loops else [(-1, -1)]
 
-# TODO: add functions for:
-# -> creating random room with sensors
-# -> answering:  Can you make sure that every point in the room is covered by at least one sensor at least part
-#    of the time? How can homology help in detecting this?
-# -> visualization (would be nice, not so important)
+
+def compute_homology(test_room):
+    print("Initial room layout: ")
+    print(test_room.layout)
+
+    print("Room after 2 time steps: ")
+    print(time_step(test_room, 2))
+
+    print("Period: " + str(test_room.period))
+
+    print("About the complex:")
+    about_complex(test_room.create_complex())
+
+    print("Sensors are scanning the whole room."
+          if whole_room_supervised(test_room)
+          else "Room has blind spots where the intruder can not be seen.")
+
+    print("Possible one dimensional loops: " + str(one_dimensional_loop(test_room)))
