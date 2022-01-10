@@ -18,6 +18,8 @@ class Sensor:
             self.steps_forward -= 1
             self.steps_back += 1
         else:
+            if not self.steps_back:
+                return
             self.direction = -self.direction
             self.position = self.position + self.direction
             self.steps_forward, self.steps_back = self.steps_back - 1, self.steps_forward + 1
