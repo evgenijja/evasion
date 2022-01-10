@@ -3,8 +3,8 @@ import random
 
 from room import Sensor, Room
 
-sensor1 = Sensor(np.array([1, 1]), np.array([1, 0]), 0, 0)
-room0 = Room(np.array([5, 6]), [sensor1])
+sensor1 = Sensor(np.array([2, 2]), np.array([0, 1]), 1, 0)
+room0 = Room(np.array([10, 5]), [sensor1])
 
 # simple sample room with a solution
 sensor1 = Sensor(np.array([1, 1]), np.array([1, 0]), 2, 0)
@@ -65,7 +65,7 @@ def random_sensor(x_room: int, y_room: int) -> Sensor:
     return Sensor(start, direction, forw, 0)
 
 
-def random_room(x_room=10, y_room=10) -> Room:
+def random_room(y_room=10, x_room=10) -> Room:
     """Creates a room of dimension x_room x y_room with num_sensors randomly placed inside."""
     room_dim = np.array([y_room, x_room])
     n_sensors = random.randint(1, x_room + y_room)
