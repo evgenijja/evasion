@@ -15,7 +15,7 @@ def whole_room_supervised(room: Room) -> bool:
     Returns False if this is not the case and there exist cells that are never seen."""
     room_copy = copy.deepcopy(room)
     layout = room_copy.layout
-    for _ in room_copy.dimension:
+    for _ in range(room_copy.period):
         layout += room_copy.time_passes()
     return 0 not in layout
 

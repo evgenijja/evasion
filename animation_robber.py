@@ -110,15 +110,7 @@ if __name__ == '__main__':
     room = Room(np.array([4, 4]), [s1, s2, s3])
     layout0 = room.layout
 
-    # using sample room from the instructions
     animation.set_room(room)
 
+    animation.run_path([[3, 3], [3, 2], [3, 1], [3, 2]])
 
-    
-    #animation.show_planar_slices()
-
-    # uncomment to animate the room
-    animation.run_path([[3, 3], [3, 2],[3, 1], [3, 2]])
-
-    # uncomment to draw room's layout at time t = 3
-    #animation.draw(3)

@@ -24,6 +24,11 @@ sensor1 = Sensor(np.array([1, 1]), np.array([1, 0]), 3, 0)
 sensor2 = Sensor(np.array([1, 3]), np.array([1, 0]), 1, 1)
 room3 = Room(np.array([4, 4]), [sensor1, sensor2])
 
+s1 = Sensor(np.array([1, 1]), np.array([0, 1]), 2, 0)
+s2 = Sensor(np.array([1, 3]), np.array([1, 0]), 2, 0)
+s3 = Sensor(np.array([3, 3]), np.array([0, -1]), 2, 0)
+room4 = Room(np.array([4, 4]), [s1, s2, s3])
+
 # primer za katerga ni delou layout - če je bil senzor npr na zgornjem robu
 sensor = Sensor(np.array([1, 0]), np.array([0, 1]), 2, 0)
 room = Room(np.array([5, 5]), [sensor])
